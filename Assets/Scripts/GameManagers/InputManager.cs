@@ -5,15 +5,18 @@ public class InputManager : MonoBehaviour
 {
     // 单例
     public static InputManager Instance { get; private set; }
+    public static MouseAimManager MouseInput {  get; private set; }
 
     // 移动方向向量（归一化）
-    public Vector2 MoveDirection { get; private set; }
+    public Vector2 InputVector2D { get; private set; }
 
     // 事件
     public event Action<Vector2> OnMoveInput;
     public event Action OnJump;
     public event Action OnSprint;
     public event Action OnInteract;
+    public event Action OnShoot;
+    public event Action OnStopShoot;
 
     // 按键配置（直接公开，方便修改）
     [Header("按键设置")]
@@ -24,6 +27,7 @@ public class InputManager : MonoBehaviour
     public KeyCode Power = KeyCode.Space;
     public KeyCode SprintKey = KeyCode.LeftShift;
     public KeyCode InteractKey = KeyCode.E;
+    public KeyCode ShootKey = KeyCode.Mouse0;
 
 
 
@@ -35,6 +39,7 @@ public class InputManager : MonoBehaviour
             return;
         }
         Instance = this;
+        MouseInput = new MouseAimManager();
         DontDestroyOnLoad(gameObject);
     }
 
@@ -52,9 +57,9 @@ public class InputManager : MonoBehaviour
         Vector2 newMoveDir = new Vector2(horizontal, vertical).normalized;
 
         // 只有当输入变化或不为零时才触发事件
-        if (newMoveDir != MoveDirection)
+        if (newMoveDir != InputVector2D)
         {
-            MoveDirection = newMoveDir;
+            InputVector2D = newMoveDir;
             OnMoveInput(newMoveDir);
         }
 
@@ -67,6 +72,14 @@ public class InputManager : MonoBehaviour
 
         if (Input.GetKeyDown(InteractKey))
             OnInteract?.Invoke();
+
+        if (Input.GetKeyDown(ShootKey))
+            OnShoot?.Invoke();
+        
+        if(Input.GetKeyUp(ShootKey))
+            OnStopShoot?.Invoke();
+
+        MouseInput.Update();
     }
 
     // 如果需要修改按键，直接在这里改或者在Inspector面板改
@@ -81,6 +94,7 @@ public class InputManager : MonoBehaviour
             case "jump": Power = newKey; break;
             case "sprint": SprintKey = newKey; break;
             case "interact": InteractKey = newKey; break;
+            case "shoot": ShootKey = newKey; break;
         }
     }
 }

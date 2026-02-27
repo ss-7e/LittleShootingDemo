@@ -3,11 +3,10 @@
 public partial class CameraControl : MonoBehaviour
 {
     [System.Serializable]
-    public class CameraFollowSettings
+    public class CameraFollowSettings : ICameraModuleSettings
     {
-        public bool Enable = true;
+        public bool Enable { get; private set; } = true;
         public Transform Target;
-        public float SmoothTime = 0.3f;
         public bool LookAtTarget = false;
     }
 
@@ -16,23 +15,21 @@ public partial class CameraControl : MonoBehaviour
         public float SmoothSpeed = 0.125f;
         public float AheadDistance = 2f;
 
-
-        private Transform _target;
+        private ICameraModuleSettings _cameraFollowSet;
+        private Transform _followTarget;
         private Vector3 _offset;
 
         public CameraFollow(Transform target, Vector3 offset)
         {
-            _target = target;
+            _followTarget = target;
             _offset = offset;
         }
 
         public void UpdateState(CameraControl camera)
         {
-            
-            if (_target != null)
+            if (_followTarget != null)
             {
-                camera.transform.position = _target.position + _offset;
-                camera.transform.LookAt(_target);
+                camera._targetPos = _followTarget.position + _offset;
             }
         }
     }
