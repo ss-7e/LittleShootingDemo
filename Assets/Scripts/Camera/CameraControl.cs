@@ -18,6 +18,7 @@ public partial class CameraControl : MonoBehaviour
     public CameraFollowSettings FollowSettings;
     public CameraAimSettings AimSettings;
     public CameraRecoilSettings RecoilSettings;
+    public CameraShakeSettings ShakeSettings;
     public float SmoothTime = 0.5f;
 
 
@@ -28,11 +29,10 @@ public partial class CameraControl : MonoBehaviour
         Vector3 offset = transform.position - FollowSettings.Target.position;
         _targetPos = transform.position;
         _modules.Add(new CameraFollow(FollowSettings.Target, offset));
-        _modules.Add(new CameraShakeModule());
+        _modules.Add(new CameraShakeModule(ShakeSettings));
         _modules.Add(new CameraAimModule(AimSettings));
         _modules.Add(new CameraRecoilModule(RecoilSettings));
     }
-    // TODO：这么写似乎会争夺控制？
     void Update()
     {
         foreach (var module in _modules)

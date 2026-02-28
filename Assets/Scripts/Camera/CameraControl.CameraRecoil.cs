@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 public partial class CameraControl : MonoBehaviour
 {
     /// <summary>
@@ -12,6 +11,7 @@ public partial class CameraControl : MonoBehaviour
     {
         public bool Enable { get; private set; } = true;
         public float MaxRecoilOffset = 0.5f; // 最大后座偏移
+        public float RecoilScale = 1f; // 后座强度缩放    
     }
     private class CameraRecoilModule : ICameraControlModule
     {
@@ -24,11 +24,12 @@ public partial class CameraControl : MonoBehaviour
         {
             _cameraRecoilSet = setting as CameraRecoilSettings;
             _recoilTimer = 0f;
+            EventManager.Instance.OnPlayerShoot += RecoilTrigger;
         }
         
 
         //TODO: 目前只能每次覆盖上次的后座
-        public void RecoilTrigge(Vector3 recoilDirection, float recoilStrength, float recoilDuration)
+        public void RecoilTrigger(Vector3 recoilDirection, float recoilStrength, float recoilDuration)
         {
             _recoilDuration = recoilDuration;
             _recoilTimer = recoilDuration;
@@ -41,7 +42,7 @@ public partial class CameraControl : MonoBehaviour
             {
                 _recoilTimer -= Time.deltaTime;
                 float recoilProgress = 1 - (_recoilTimer / _recoilDuration); 
-                float currentRecoilOffset = Mathf.Lerp(_cameraRecoilSet.MaxRecoilOffset, 0, recoilProgress) * _recoilStrength;
+                float currentRecoilOffset = Mathf.Lerp(_cameraRecoilSet.MaxRecoilOffset, 0, recoilProgress) * _recoilStrength * _cameraRecoilSet.RecoilScale;
                 camera._targetPos += _recoilDirection * currentRecoilOffset;
                 camera.transform.position += _recoilDirection * currentRecoilOffset;
             }

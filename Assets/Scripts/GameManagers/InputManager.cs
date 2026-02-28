@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
+[DefaultExecutionOrder(-100)]
 public class InputManager : MonoBehaviour
 {
     // 单例
@@ -28,7 +29,7 @@ public class InputManager : MonoBehaviour
     public KeyCode SprintKey = KeyCode.LeftShift;
     public KeyCode InteractKey = KeyCode.E;
     public KeyCode ShootKey = KeyCode.Mouse0;
-
+    
 
 
     private void Awake()

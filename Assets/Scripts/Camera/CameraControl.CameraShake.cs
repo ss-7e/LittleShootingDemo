@@ -4,7 +4,12 @@ using UnityEngine;
 
 public partial class CameraControl : MonoBehaviour
 {
-
+    [System.Serializable]
+    public class CameraShakeSettings : ICameraModuleSettings
+    {
+        public bool Enable { get; private set; } = true;
+        public float ShakeStrengthScale = 1f; //震动强度缩放
+    }
     private class CameraShakeModule : ICameraControlModule
     {
         private class ShakeInstance
@@ -12,7 +17,7 @@ public partial class CameraControl : MonoBehaviour
             public float Duration {get; private set; }
             public float Strength { get; private set; }
             public float Timer { get; private set; }
-            public ShakeInstance(float duration, float strength)
+            public ShakeInstance(float strength, float duration)
             {
                 Duration = duration;
                 Strength = strength;
@@ -35,15 +40,22 @@ public partial class CameraControl : MonoBehaviour
             }
         }
         
+        public CameraShakeModule(ICameraModuleSettings cameraModuleSettings)
+        {
+            _shakeSettings = cameraModuleSettings as CameraShakeSettings;
+            EventManager.Instance.OnPlayerShoot += TriggerShake;
+        }
+
+        CameraShakeSettings _shakeSettings;
         ShakeInstance _currentShake; //暂时这么写，后续可以改成列表支持叠加
         /// <summary>
         /// 
         /// </summary>
         /// <param name="duration"></param>
         /// <param name="strength"></param>
-        public void TriggerShake(float duration, float strength)
+        public void TriggerShake(Vector3 shakeDirection, float strength, float duration)
         {
-            _currentShake = new ShakeInstance(duration, strength);
+            _currentShake = new ShakeInstance(strength * _shakeSettings.ShakeStrengthScale, duration);
         }
         public void UpdateState(CameraControl camera)
         {

@@ -9,9 +9,9 @@ public partial class Player : MonoBehaviour
     public float RotationSmoothTime = 0.1f;
     public float RotationSpeed = 720f; // TODO：根据武器修改？
     public Transform AimerTransform;
+    public WeaponBase Weapon; // TODO: 临时编辑器用，后续删掉
 
-
-
+    private WeaponBase _currentWeapon;
     private Vector3 _movement = Vector3.zero;
     private Vector3 _inputMoveDir;
     private Vector3 _moveDirVelocity = Vector3.zero;
@@ -19,6 +19,11 @@ public partial class Player : MonoBehaviour
 
     void Start()
     {
+        if(Weapon != null)
+        {
+            _currentWeapon = Weapon;
+            _currentWeapon.SetOwner(this);
+        }
         InputManager.Instance.OnMoveInput += PlayerHandleMove;
         _playerAim = new PlayerAim();
     }
@@ -31,7 +36,8 @@ public partial class Player : MonoBehaviour
 
     void Update()
     {
-        Vector3 targetVelocity = _inputMoveDir * Speed;
+        float fowardBoost = -Vector3.Dot(transform.forward, _inputMoveDir) * 0.15f  + 1f; // 往瞄准方向移动时增加速度，远离时减速
+        Vector3 targetVelocity = fowardBoost * Speed * _inputMoveDir;
         _movement = Vector3.SmoothDamp(_movement, targetVelocity, ref _moveDirVelocity, MoveSmoothTime);
         transform.position += _movement * Time.deltaTime;
         _playerAim.SetAimRotation(this);
