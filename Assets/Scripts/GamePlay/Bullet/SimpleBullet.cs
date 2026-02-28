@@ -28,6 +28,13 @@ public class SimpleBullet : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.TryGetComponent<Enemy>(out var enemy))
+        {
+            enemy.OnHitByBullet(SimpleBulletData.Direction, SimpleBulletData.Damage);
+        }
+        Destroy(gameObject);
+    }
 
-    
 }
