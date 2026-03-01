@@ -1,20 +1,26 @@
 ﻿using System;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public partial class Enemy : MonoBehaviour
 {
     public event Action OnDeath;
 
     [Header("击打材质效果设置")]
-    public float HitEffectDuration = 0.2f;      // 总效果持续时间
-    public float DarkPhaseDuration = 0.05f;     // 变黑阶段持续时间
+    public float HitEffectDuration = 0.2f;       // 总效果持续时间
+    public float DarkPhaseDuration = 0.05f;      // 变黑阶段持续时间
     public Color DarkColor = Color.black;        // 变黑时的颜色
     public Color BrightColor = Color.white;      // 变亮时的颜色
     public float BrightEmissionIntensity = 3f;   // 变亮时的自发光强度
 
     [Header("击退效果")]
-    public Vector3 HitIntoAir = new(0, 1f, 0); // 击退时的向上力
-    public float HitForce = 2f; // 击退的力度
+    public Vector3 HitIntoAir = new(0, 1f, 0);  // 击退时的向上力
+    public float HitForce = 0.05f;              // 击退的力度
+
+    [Header("死亡效果")]
+    public float DieHitForce = 0.5f;            // 死亡时的击退力度
+    public Vector3 DieHitVector = Vector3.zero;
+    public bool DeleteGameObjectOnDeath = true; // 是否在死亡后删除敌人对象
+    public bool KeepPhysicsOnDeath = true;      // 保留尸体碰撞
 
     private Material _material;
     private Color _originalBaseColor;
@@ -26,6 +32,7 @@ public class Enemy : MonoBehaviour
     [Header("敌人属性")]
     public float MaxHealth = 100;
     private float _currentHealth;
+
 
     void Start()
     {
@@ -48,7 +55,6 @@ public class Enemy : MonoBehaviour
 
         _isHitting = true;
         hitDirection += HitIntoAir;
-        _rigidbody.AddForce(hitDirection * HitForce, ForceMode.Impulse);
         HybridUprightSystem hybridUprightSystem = GetComponent<HybridUprightSystem>();
         hybridUprightSystem?.ApplyImpact(hitDirection, transform.position);
 
@@ -73,6 +79,8 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+        GetToPlayer();
+
         // 处理击打效果计时
         if (_hitEffectTimer > 0)
         {
@@ -158,20 +166,31 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
-        // 触发死亡事件
+        ResetMaterialToOriginal();
         OnDeath?.Invoke();
+        FallDown();
 
-        // 销毁敌人对象
-        Destroy(gameObject);
-    }
-
-    void OnDestroy()
-    {
-        // 清理材质（可选）
-        if (_material != null)
+        if (DeleteGameObjectOnDeath)
         {
-            // 如果是在运行时动态创建的材质，可能需要销毁
-            // Destroy(material);
+            Destroy(GetComponent<Collider>(), 2f);
+            Destroy(gameObject, 5f); // 5秒后删除对象，给击退和倒地效果时间展示
         }
+        else if (!KeepPhysicsOnDeath)
+        {
+            Destroy(_rigidbody, 2f);
+            Destroy(GetComponent<Collider>(), 2f);
+        }
+    }
+    private void FallDown()
+    {
+        _rigidbody.isKinematic = true;
+        _rigidbody.isKinematic = false;
+        _rigidbody.velocity = Vector3.zero; // 重置速度，确保击退效果一致
+        _rigidbody.drag = 0;
+
+        Destroy(this);
+        Destroy(GetComponent<HybridUprightSystem>());   // 禁用直立系统
+        Destroy(GetComponent<ConfigurableJoint>());     // 销毁关节组件，允许敌人倒地
+        _rigidbody.AddForceAtPosition((transform.position - Target.position ).normalized * DieHitForce + DieHitVector, transform.position + Vector3.up, ForceMode.Impulse); // 添加击退力
     }
 }

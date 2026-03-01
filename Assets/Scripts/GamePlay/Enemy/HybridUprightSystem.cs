@@ -25,12 +25,12 @@ public class HybridUprightSystem : MonoBehaviour
 
     void SetupUprightJoint()
     {
-        _joint = gameObject.AddComponent<ConfigurableJoint>();
+        _joint = gameObject.GetComponent<ConfigurableJoint>();
 
         // 配置关节
         _joint.rotationDriveMode = RotationDriveMode.Slerp;
 
-        JointDrive slerpDrive = new JointDrive();
+        JointDrive slerpDrive = new();
         slerpDrive.positionSpring = UprightStrength;
         slerpDrive.positionDamper = UprightStrength * 0.1f;
         slerpDrive.maximumForce = Mathf.Infinity;
@@ -48,7 +48,6 @@ public class HybridUprightSystem : MonoBehaviour
     public void ApplyImpact(Vector3 force, Vector3 point)
     {
         point += hitOffset; // 调整冲击点位置
-        force.y = 0;
         lastImpactTime = Time.time;
         isRecovering = true;
 

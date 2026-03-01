@@ -23,9 +23,11 @@ public class EventManager : MonoBehaviour
         }
     }
     public event Action<Vector3, float , float> OnPlayerShoot;
+    public event Action OnShot;
 
     public void TriggerPlayerShoot(Vector3 fireDircetion, float strength, float lastTime)
     {
         OnPlayerShoot?.Invoke(fireDircetion, strength, lastTime);
+        OnShot?.Invoke();
     }
 }
