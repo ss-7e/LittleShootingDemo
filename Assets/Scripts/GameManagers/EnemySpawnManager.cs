@@ -53,7 +53,7 @@ public class EnemySpawnManager : MonoBehaviour
             Mathf.Sin(angle) * radius
         );
         GameObject e;
-        if (Random.Range(0f, 1f) > 0.5f)
+        if (Random.Range(0f, 1f) > SpawnChance)
             e = Instantiate(EnemyPrefab[0], position + PlayerTransform.position, Quaternion.identity, parent.transform);
         else
             e = Instantiate(EnemyPrefab[1], position + PlayerTransform.position, Quaternion.identity, parent.transform);
