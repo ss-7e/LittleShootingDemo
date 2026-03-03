@@ -33,6 +33,7 @@ public class SimpleBullet : MonoBehaviour
         if(other.TryGetComponent<Enemy>(out var enemy))
         {
             enemy.OnHitByBullet(SimpleBulletData.Direction, SimpleBulletData.Damage);
+            EventManager.Instance.TriggerBulletHit();
         }
         Destroy(gameObject);
     }

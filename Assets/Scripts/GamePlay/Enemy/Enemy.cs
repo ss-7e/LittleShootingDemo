@@ -29,11 +29,6 @@ public partial class Enemy : MonoBehaviour
     private bool _isHitting = false;
     private Rigidbody _rigidbody;
 
-    [Header("敌人属性")]
-    public float MaxHealth = 100;
-    private float _currentHealth;
-
-
     void Start()
     {
         _material = GetComponent<Renderer>().material;
@@ -42,8 +37,8 @@ public partial class Enemy : MonoBehaviour
         _material.EnableKeyword("_EMISSION");
         
         _rigidbody = GetComponent<Rigidbody>();
-
-        _currentHealth = MaxHealth;
+        InitHealth();
+        
     }
 
     public void OnHitByBullet(Vector3 hitDirection, float damage = 10)
@@ -66,20 +61,10 @@ public partial class Enemy : MonoBehaviour
     }
 
 
-    private void TakeDamage(float damage)
-    {
-        _currentHealth -= damage;
-
-        // 如果生命值小于等于0，触发死亡事件
-        if (_currentHealth <= 0)
-        {
-            Die();
-        }
-    }
-
     void Update()
     {
         GetToPlayer();
+        HealthBarUpdate();
 
         // 处理击打效果计时
         if (_hitEffectTimer > 0)

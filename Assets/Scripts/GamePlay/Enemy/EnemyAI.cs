@@ -16,7 +16,7 @@ public partial class Enemy : MonoBehaviour
         {
             Vector3 targetVelocity = moveVector.normalized * MaxSpeed;
             Vector3 velocityDiff = targetVelocity - _rigidbody.velocity;
-            velocityDiff = Vector3.ClampMagnitude(velocityDiff, Acceleration * Time.fixedDeltaTime);
+            velocityDiff = Vector3.ClampMagnitude(velocityDiff, Acceleration * Time.deltaTime);
             _rigidbody.AddForce(velocityDiff * _rigidbody.mass, ForceMode.VelocityChange);
         }
         else
