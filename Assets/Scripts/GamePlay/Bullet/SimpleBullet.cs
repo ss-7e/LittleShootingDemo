@@ -30,12 +30,15 @@ public class SimpleBullet : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.TryGetComponent<Enemy>(out var enemy))
+        if(other.TryGetComponent<IHitable>(out var hit))
         {
-            enemy.OnHitByBullet(SimpleBulletData.Direction, SimpleBulletData.Damage);
+            var hits = other.GetComponents<IHitable>();
+            Debug.Log($"Bullet hit {other.gameObject.name} with {hits.Length} hitables");
+            foreach (var h in hits)
+                h.OnHit(SimpleBulletData.Direction, SimpleBulletData.Damage);
             EventManager.Instance.TriggerBulletHit();
+            Destroy(gameObject);
         }
-        Destroy(gameObject);
     }
 
 }

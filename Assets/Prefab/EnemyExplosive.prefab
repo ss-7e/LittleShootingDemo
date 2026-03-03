@@ -270,8 +270,9 @@ GameObject:
   - component: {fileID: 4350311571106460642}
   - component: {fileID: 6938351653363606724}
   - component: {fileID: 2173421444036650509}
+  - component: {fileID: 5742635155784569974}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: EnemyExplosive
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -323,7 +324,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8d0fa6c345193a44aa8e80a3b2331e06, type: 2}
+  - {fileID: 2100000, guid: 368bbbbdfbac8c749ad59c24bb2f8096, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -524,7 +525,7 @@ MonoBehaviour:
   MaxSpeed: 7
   Acceleration: 8
   Target: {fileID: 0}
-  MaxHealth: 50
+  MaxHealth: 60
   HealthbarUI: {fileID: 5318331581708083645}
   HealthBarMaterial: {fileID: 2100000, guid: 9ec2b0060f514644a8c8d1a542682366, type: 2}
   HealthBarHideDelay: 2
@@ -546,6 +547,26 @@ MonoBehaviour:
   impactMultiplier: 1
   recoveryDelay: 0.4
   hitOffset: {x: 0, y: 2.5, z: 0}
+--- !u!114 &5742635155784569974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7420288343640261832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 051506898c36cd44e9d3aac8ed8dc81c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ExplosionRadius: 5
+  ExplosionForce: 30
+  UpwardsModifier: 1
+  Damage: 30
+  Health: 50
+  ExplosiveDuration: 0.5
+  ExposionEffectPrefab: {fileID: 3469596042712439790, guid: 8063c88d867b400409c3cf6d3c34b19e,
+    type: 3}
 --- !u!1 &9034359270845705831
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Collections.Specialized;
+﻿using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 public partial class CameraControl : MonoBehaviour
@@ -44,10 +44,11 @@ public partial class CameraControl : MonoBehaviour
         {
             _shakeSettings = cameraModuleSettings as CameraShakeSettings;
             EventManager.Instance.OnPlayerShoot += TriggerShake;
+            EventManager.Instance.OnExplode += TriggerShake;
         }
 
         CameraShakeSettings _shakeSettings;
-        ShakeInstance _currentShake; //暂时这么写，后续可以改成列表支持叠加
+        List<ShakeInstance> _shakeList = new(); 
         /// <summary>
         /// 
         /// </summary>
@@ -55,18 +56,19 @@ public partial class CameraControl : MonoBehaviour
         /// <param name="strength"></param>
         public void TriggerShake(Vector3 shakeDirection, float strength, float duration)
         {
-            _currentShake = new ShakeInstance(strength * _shakeSettings.ShakeStrengthScale, duration);
+            _shakeList.Add(new ShakeInstance(strength * _shakeSettings.ShakeStrengthScale, duration));
         }
         public void UpdateState(CameraControl camera)
         {
-            if (_currentShake != null)
+            for (int i = _shakeList.Count - 1; i >= 0; i--)
             {
-                Vector3 shakeOffset = _currentShake.Shake();
+                ShakeInstance shake = _shakeList[i];
+                Vector3 shakeOffset = shake.Shake();
                 camera._targetPos += shakeOffset;
                 camera.transform.position += shakeOffset;
-                if (_currentShake.Timer <= 0)
+                if (shake.Timer <= 0)
                 {
-                    _currentShake = null;
+                    _shakeList.Remove(shake);
                 }
             }
         }

@@ -23,9 +23,10 @@ public class EventManager : MonoBehaviour
         }
     }
     public event Action<Vector3, float , float> OnPlayerShoot;
+    public event Action<Vector3, float, float> OnExplode;
     public event Action OnShot;
     public event Action OnBulletHit;
-
+    
     public void TriggerPlayerShoot(Vector3 fireDircetion, float strength, float lastTime)
     {
         OnPlayerShoot?.Invoke(fireDircetion, strength, lastTime);
@@ -35,5 +36,10 @@ public class EventManager : MonoBehaviour
     public void TriggerBulletHit()
     {
         OnBulletHit?.Invoke();
+    }
+
+    public void TriggerExplosion(Vector3 explosionPosition, float strength, float lastTime)
+    {
+        OnExplode?.Invoke(explosionPosition, strength, lastTime);
     }
 }

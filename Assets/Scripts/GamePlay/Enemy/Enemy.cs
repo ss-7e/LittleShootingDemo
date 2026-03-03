@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public partial class Enemy : MonoBehaviour
+public partial class Enemy : MonoBehaviour, IHitable
 {
     public event Action OnDeath;
 
@@ -41,7 +41,7 @@ public partial class Enemy : MonoBehaviour
         
     }
 
-    public void OnHitByBullet(Vector3 hitDirection, float damage = 10)
+    public void OnHit(Vector3 hitDirection, float damage = 10)
     {
 
         // 触发击打效果
@@ -57,7 +57,6 @@ public partial class Enemy : MonoBehaviour
         // 造成伤害
 
         TakeDamage(damage);
-
     }
 
 

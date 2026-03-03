@@ -10,12 +10,10 @@ public class HybridUprightSystem : MonoBehaviour
     public bool UseSpring = true;
 
     [Header("冲击响应")]
-    public float impactMultiplier = 1f;
-    public float recoveryDelay = 0.5f; // 冲击后恢复延迟
-    public Vector3 hitOffset = new Vector3(0, 0.5f, 0); // 冲击点相对于物体中心的偏移
+    public float ImpactMultiplier = 1f;
+    public float RecoveryDelay = 0.5f; // 冲击后恢复延迟
+    public Vector3 HitOffset = new Vector3(0, 0.5f, 0); // 冲击点相对于物体中心的偏移
 
-    private float lastImpactTime;
-    private bool isRecovering;
 
     void Start()
     {
@@ -47,9 +45,7 @@ public class HybridUprightSystem : MonoBehaviour
     // 应用冲击力
     public void ApplyImpact(Vector3 force, Vector3 point)
     {
-        point += hitOffset; // 调整冲击点位置
-        lastImpactTime = Time.time;
-        isRecovering = true;
+        point += HitOffset; // 调整冲击点位置
 
         // 临时降低直立强度，使冲击效果更明显
         if (UseSpring)
@@ -60,7 +56,7 @@ public class HybridUprightSystem : MonoBehaviour
         }
 
         // 应用冲击力
-        _rb.AddForceAtPosition(force * impactMultiplier, point, ForceMode.Impulse);
+        _rb.AddForceAtPosition(force * ImpactMultiplier, point, ForceMode.Impulse);
 
         // 开始恢复协程
         StartCoroutine(RecoverUpright());
@@ -68,7 +64,7 @@ public class HybridUprightSystem : MonoBehaviour
 
     System.Collections.IEnumerator RecoverUpright()
     {
-        yield return new WaitForSeconds(recoveryDelay);
+        yield return new WaitForSeconds(RecoveryDelay);
 
         // 逐渐恢复直立强度
         float elapsed = 0;
@@ -89,6 +85,5 @@ public class HybridUprightSystem : MonoBehaviour
             yield return null;
         }
 
-        isRecovering = false;
     }
 }
