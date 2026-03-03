@@ -40,6 +40,7 @@ public class AudioManager : MonoBehaviour
     private void Start()
     {
         EventManager.Instance.OnShot += PlayShotSound;
+        EventManager.Instance.OnExplode += PlayExplodeSound;
     }
 
     private void InitializeAudioManager()
@@ -154,9 +155,14 @@ public class AudioManager : MonoBehaviour
     private void PlayShotSound()
     {
         string clipName = _audioClipList[0].name; // 假设第一个音频剪辑是射击声音 TODO:后续看怎么改
-        PlaySound2D(clipName);
+        PlaySound2D(clipName, 0.8f);
     }
 
+    private void PlayExplodeSound(Vector3 _, float a, float b)
+    {
+        string clipName = _audioClipList[1].name; // 假设第一个音频剪辑是射击声音 TODO:后续看怎么改
+        PlaySound2D(clipName, 1.5f);
+    }
     /// <summary>
     /// 直接播放AudioClip并设置音量
     /// </summary>

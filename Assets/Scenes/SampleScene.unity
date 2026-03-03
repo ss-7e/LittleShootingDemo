@@ -3700,6 +3700,7 @@ MonoBehaviour:
   _musicMixerGroup: {fileID: 0}
   _poolSize: 10
   _audioClipList:
+  - {fileID: 8300000, guid: 1b145bcffd767854fb0c71c37678ebaa, type: 3}
   - {fileID: 8300000, guid: af66162561d2eed40ad49268cab318bb, type: 3}
 --- !u!1 &1769257794
 GameObject:
